@@ -2,6 +2,11 @@ Cassandra with VLOG
 
 
 
+## Util directory
+it includes simple python program that access cassandra db
+please change the ip address to 155.230.91.227 
+
+
 ## Requirements
 
 - Two Machine
