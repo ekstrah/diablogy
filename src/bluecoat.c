@@ -1229,11 +1229,12 @@ int fclose(FILE *stream) {
 	int ret;
 	original_fclose = dlsym(RTLD_NEXT, "fclose");
 
+	const int fd = fileno(stream);
+
 	SET_START_TIME();
 	ret = original_fclose(stream);
 	const int save_errno = errno;
 	SET_END_TIME();
-	const int fd = fileno(stream);
 
 	char buffer_for_path[FD_PATH_SIZE]; // for PATH of FD (to the log)
 	char printBuf[PRINT_BUF_SIZE];
