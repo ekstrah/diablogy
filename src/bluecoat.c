@@ -865,10 +865,8 @@ ssize_t write(int fd, const void *buf, size_t nbyte) {
 	char printBuf[PRINT_BUF_SIZE];
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "write %ld %d ", ret, fd);
-	if (!isSocket(fd)) {
 		// Write path that `fd` is linking
-		p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-	}
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
 	if (ret > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -878,7 +876,7 @@ ssize_t write(int fd, const void *buf, size_t nbyte) {
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 
 	dbg("%s", printBuf);
-    //printf("%s", printBuf);
+        printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -907,7 +905,7 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-    //printf("%s", printBuf);
+   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -928,16 +926,7 @@ ssize_t writev(int fd, const struct iovec * iov, int iovcnt) {
 	char printBuf[PRINT_BUF_SIZE];
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "writev %ld %d ", ret, fd);
-	if (isSocket(fd)) {
-		p += printLocalAddr (p, PRINT_LIMIT, fd);
-		p += snprintf (p, PRINT_LIMIT, " ");
-		p += printRemoteAddr (p, PRINT_LIMIT, fd);
-	}
-	else{
-		p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
-		// Write path that `fd` is linking
-		p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-	}
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
 	if (ret > 0 && iov != NULL && iovcnt > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -952,6 +941,8 @@ ssize_t writev(int fd, const struct iovec * iov, int iovcnt) {
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
+	printf("%s\n", printBuf);
+
 	errno = save_errno;
 	return ret;
 }
@@ -972,16 +963,9 @@ ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset) {
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "pwrite %ld %d ", ret, fd);
 	// TODO - pwrite is used for only files, not socket, consider removing isSocket
-	if (isSocket(fd)) {
-		p += printLocalAddr (p, PRINT_LIMIT, fd);
-		p += snprintf (p, PRINT_LIMIT, " ");
-		p += printRemoteAddr (p, PRINT_LIMIT, fd);
-	}
-	else{
-		p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
-		// Write path that `fd` is linking
-		p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-	}
+	p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
+	// Write path that `fd` is linking
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
 	if (ret > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -990,6 +974,7 @@ ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset) {
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
+   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1009,16 +994,9 @@ ssize_t pwrite64(int fd, const void *buf, size_t nbyte, off64_t offset) {
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "pwrite64 %ld %d ", ret, fd);
 	// TODO - pwrite is used for only files, not socket, consider removing isSocket
-	if (isSocket(fd)) {
-		p += printLocalAddr (p, PRINT_LIMIT, fd);
-		p += snprintf (p, PRINT_LIMIT, " ");
-		p += printRemoteAddr (p, PRINT_LIMIT, fd);
-	}
-	else{
-		p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
+	p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
 		// Write path that `fd` is linking
-		p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-	}
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
 	if (ret > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -1027,6 +1005,7 @@ ssize_t pwrite64(int fd, const void *buf, size_t nbyte, off64_t offset) {
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
+   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1046,16 +1025,7 @@ ssize_t pwritev(int fd, const struct iovec * iov, int iovcnt, off_t offset) {
 	char printBuf[PRINT_BUF_SIZE];
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "pwritev %ld %d ", ret, fd);
-	if (isSocket(fd)) {
-		p += printLocalAddr (p, PRINT_LIMIT, fd);
-		p += snprintf (p, PRINT_LIMIT, " ");
-		p += printRemoteAddr (p, PRINT_LIMIT, fd);
-	}
-	else{
-		p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
-		// Write path that `fd` is linking
-		p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-	}
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
 	if (ret > 0 && iov != NULL && iovcnt > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -1088,16 +1058,8 @@ ssize_t pwritev64(int fd, const struct iovec * iov, int iovcnt, off64_t offset) 
 	char printBuf[PRINT_BUF_SIZE];
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "pwritev64 %ld %d ", ret, fd);
-	if (isSocket(fd)) {
-		p += printLocalAddr (p, PRINT_LIMIT, fd);
-		p += snprintf (p, PRINT_LIMIT, " ");
-		p += printRemoteAddr (p, PRINT_LIMIT, fd);
-	}
-	else{
-		p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
-		// Write path that `fd` is linking
-		p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-	}
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
+
 
 	if (ret > 0 && iov != NULL && iovcnt > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -1112,6 +1074,7 @@ ssize_t pwritev64(int fd, const struct iovec * iov, int iovcnt, off64_t offset) 
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
+   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1132,9 +1095,7 @@ size_t fwrite_unlocked(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	char printBuf[PRINT_BUF_SIZE];
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "fwrite_unlocked %ld %d ", ret*size, fd);
-	p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
-	// Write path that `fd` is linking
-	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
+	p += snprintf (p, PRINT_LIMIT, "%s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
 	if (ret > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -1143,7 +1104,7 @@ size_t fwrite_unlocked(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-
+   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1161,16 +1122,7 @@ int aio_write(struct aiocb *aiocbp) {
   char *p = printBuf;
   int fd = aiocbp->aio_fildes;
   p += snprintf (p, PRINT_LIMIT, "aio_write %d %d ", ret, fd);
-  if (isSocket(fd)) {
-    p += printLocalAddr (p, PRINT_LIMIT, fd);
-    p += snprintf (p, PRINT_LIMIT, " ");
-    p += printRemoteAddr (p, PRINT_LIMIT, fd);
-  }
-  else{
-    p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
-    // Write path that `fd` is linking
-    p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-  }
+  p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 	if (ret > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
 		p += printData (p, PRINT_LIMIT, "aio stuff" ,ret);
@@ -1178,6 +1130,7 @@ int aio_write(struct aiocb *aiocbp) {
 	if (ret < 0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
+   	printf("%s\n", printBuf);
 
   return ret;
 }
@@ -1196,22 +1149,14 @@ int aio_write64(struct aiocb64 *aiocbp64) {
   char *p = printBuf;
   int fd = aiocbp64->aio_fildes;
   p += snprintf (p, PRINT_LIMIT, "aioi_write64 %d %d ", ret, fd);
-  if (isSocket(fd)) {
-    p += printLocalAddr (p, PRINT_LIMIT, fd);
-    p += snprintf (p, PRINT_LIMIT, " ");
-    p += printRemoteAddr (p, PRINT_LIMIT, fd);
-  }
-  else{
-    p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
-    // Write path that `fd` is linking
     p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-  }
         if (ret > 0) {
                 p += snprintf (p, PRINT_LIMIT, " ");
                 p += printData (p, PRINT_LIMIT, "aio_64 stuff" ,ret);
         }
         if (ret < 0)
                 p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
+   	printf("%s\n", printBuf);
 	dbg("%s", printBuf);
 
   return ret;
@@ -1234,16 +1179,7 @@ ssize_t pwritev2(int fd, const struct iovec * iov, int iovcnt, off_t offset, int
 	char printBuf[PRINT_BUF_SIZE];
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "pwritev2 %ld %d ", ret, fd);
-	if (isSocket(fd)) {
-		p += printLocalAddr (p, PRINT_LIMIT, fd);
-		p += snprintf (p, PRINT_LIMIT, " ");
-		p += printRemoteAddr (p, PRINT_LIMIT, fd);
-	}
-	else{
-		p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
-		// Write path that `fd` is linking
-		p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-	}
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
 	if (ret > 0 && iov != NULL && iovcnt > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -1258,6 +1194,7 @@ ssize_t pwritev2(int fd, const struct iovec * iov, int iovcnt, off_t offset, int
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
+   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1268,28 +1205,45 @@ int close (int fd) {
 
     char printBuf[PRINT_BUF_SIZE];
     char *p = printBuf;
-    char tmpBuf1[PRINT_BUF_SIZE];
     char tmpBuf2[PRINT_BUF_SIZE];
-    char *q1 = tmpBuf1;
     char *q2 = tmpBuf2;
-
-    if (isSocket(fd)) {
-        q1 += printLocalAddr (q1, PRINT_LIMIT, fd);
-        q1 += snprintf (q1, PRINT_LIMIT, " ");
-        q1 += printRemoteAddr (q1, PRINT_LIMIT, fd);
-    }
-    else
-        q1 += snprintf (q1, PRINT_LIMIT, "NON_SOCKET");
 
     const int retVal = libc_close (fd);
     SET_END_TIME();
 
     if (retVal>-1) {
             //const int save_errno = errno;
-            q2 += snprintf (q2, PRINT_LIMIT, "close %d %d %s", retVal, fd, tmpBuf1);
+            q2 += snprintf (q2, PRINT_LIMIT, "close %d %d ", retVal, fd);
+	    q2 += snprintf(q2, PRINT_LIMIT, "None None");
             //if (retVal<0) q2 += snprintf (q2, PRINT_LIMIT, "%s", ERR_STRING);
             dbg ("%s", tmpBuf2);
+
+	    printf("%s\n", tmpBuf2);
     }
 
     return retVal;
+}
+int fclose(FILE *stream) {
+	int (*original_fclose)(FILE*);
+	int ret;
+	original_fclose = dlsym(RTLD_NEXT, "fclose");
+
+	SET_START_TIME();
+	ret = original_fclose(stream);
+	const int save_errno = errno;
+	SET_END_TIME();
+	const int fd = fileno(stream);
+
+	char buffer_for_path[FD_PATH_SIZE]; // for PATH of FD (to the log)
+	char printBuf[PRINT_BUF_SIZE];
+	char *p = printBuf;
+	p += snprintf (p, PRINT_LIMIT, "fclose %d %d ", ret, fd);
+	// Write path that `fd` is linking
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
+
+	dbg("%s", printBuf);
+   	printf("%s\n", printBuf);
+	errno = save_errno;
+
+	return ret;
 }
