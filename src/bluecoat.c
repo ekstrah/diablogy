@@ -1223,6 +1223,7 @@ int close (int fd) {
 
     return retVal;
 }
+
 int fclose(FILE *stream) {
 	int (*original_fclose)(FILE*);
 	int ret;
