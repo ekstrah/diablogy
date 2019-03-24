@@ -1211,30 +1211,33 @@ int close (int fd) {
 
     return retVal;
 }
-/*
+
 int fclose(FILE *stream) {
 	int (*original_fclose)(FILE*);
-	int ret;
 	original_fclose = dlsym(RTLD_NEXT, "fclose");
+	
+	// Check flag for monitoring on/off
+	if (!FLAG_LOGGING)
+		return original_fclose(stream);
 
 	const int fd = fileno(stream);
+	char path_buffer[FD_PATH_SIZE]; // for PATH of FD (to the log)
+	char *path_buffer_ptr = getPathByFd(getpid(), fd, path_buffer);
 
 	SET_START_TIME();
-	ret = original_fclose(stream);
+	const int ret = original_fclose(stream);
 	const int save_errno = errno;
 	SET_END_TIME();
 
-	char buffer_for_path[FD_PATH_SIZE]; // for PATH of FD (to the log)
 	char printBuf[PRINT_BUF_SIZE];
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "fclose %d %d ", ret, fd);
 	// Write path that `fd` is linking
-	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
+	p += snprintf (p, PRINT_LIMIT, " %s ", path_buffer_ptr); // add by wjhan(18-03-07)
 
 	dbg("%s", printBuf);
-   	printf("%s\n", printBuf);
+   	//printf("%s\n", printBuf);
 	errno = save_errno;
 
 	return ret;
 }
-*/
