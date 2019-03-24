@@ -875,8 +875,7 @@ ssize_t write(int fd, const void *buf, size_t nbyte) {
 	if (ret < 0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 
-	dbg("%s", printBuf);
-        printf("%s\n", printBuf);
+//	dbg("%s", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -905,7 +904,6 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -941,7 +939,6 @@ ssize_t writev(int fd, const struct iovec * iov, int iovcnt) {
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-	printf("%s\n", printBuf);
 
 	errno = save_errno;
 	return ret;
@@ -963,7 +960,6 @@ ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset) {
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "pwrite %ld %d ", ret, fd);
 	// TODO - pwrite is used for only files, not socket, consider removing isSocket
-	p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
 	// Write path that `fd` is linking
 	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
@@ -974,7 +970,6 @@ ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset) {
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -994,7 +989,6 @@ ssize_t pwrite64(int fd, const void *buf, size_t nbyte, off64_t offset) {
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "pwrite64 %ld %d ", ret, fd);
 	// TODO - pwrite is used for only files, not socket, consider removing isSocket
-	p += snprintf (p, PRINT_LIMIT, "NON_SOCKET");
 		// Write path that `fd` is linking
 	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
@@ -1005,7 +999,6 @@ ssize_t pwrite64(int fd, const void *buf, size_t nbyte, off64_t offset) {
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1074,7 +1067,6 @@ ssize_t pwritev64(int fd, const struct iovec * iov, int iovcnt, off64_t offset) 
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1095,7 +1087,7 @@ size_t fwrite_unlocked(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	char printBuf[PRINT_BUF_SIZE];
 	char *p = printBuf;
 	p += snprintf (p, PRINT_LIMIT, "fwrite_unlocked %ld %d ", ret*size, fd);
-	p += snprintf (p, PRINT_LIMIT, "%s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
 
 	if (ret > 0) {
 		p += snprintf (p, PRINT_LIMIT, " ");
@@ -1104,7 +1096,6 @@ size_t fwrite_unlocked(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1130,7 +1121,6 @@ int aio_write(struct aiocb *aiocbp) {
 	if (ret < 0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-   	printf("%s\n", printBuf);
 
   return ret;
 }
@@ -1156,7 +1146,6 @@ int aio_write64(struct aiocb64 *aiocbp64) {
         }
         if (ret < 0)
                 p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
-   	printf("%s\n", printBuf);
 	dbg("%s", printBuf);
 
   return ret;
@@ -1194,7 +1183,6 @@ ssize_t pwritev2(int fd, const struct iovec * iov, int iovcnt, off_t offset, int
 	if (ret<0)
 		p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
-   	printf("%s\n", printBuf);
 	errno = save_errno;
 	return ret;
 }
@@ -1218,12 +1206,12 @@ int close (int fd) {
             //if (retVal<0) q2 += snprintf (q2, PRINT_LIMIT, "%s", ERR_STRING);
             dbg ("%s", tmpBuf2);
 
-	    printf("%s\n", tmpBuf2);
+//	    printf("%s\n", tmpBuf2);
     }
 
     return retVal;
 }
-
+/*
 int fclose(FILE *stream) {
 	int (*original_fclose)(FILE*);
 	int ret;
@@ -1249,3 +1237,4 @@ int fclose(FILE *stream) {
 
 	return ret;
 }
+*/
