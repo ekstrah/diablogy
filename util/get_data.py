@@ -4,7 +4,6 @@ from cassandra.cluster import Cluster, BatchStatement
 from cassandra.query import SimpleStatement
 
 
-
 class cassandraSampleText:
 	def __init__(self):
 		self.cluster = None
@@ -12,12 +11,11 @@ class cassandraSampleText:
 		self.keyspaces = "beta"
 		self.log = None
 
-
 	def __del__(self):
 		self.cluster.shutdown()
 
 	def create_session(self):
-		self.cluster = Cluster(['localhost'])
+		self.cluster = Cluster(['155.230.91.227'])
 		self.session = self.cluster.connect(self.keyspaces)
 
 	def getsession(self):

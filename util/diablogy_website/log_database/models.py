@@ -1,25 +1,20 @@
 import uuid
 from cassandra.cqlengine import columns
-from cassandra.cqlengine.models import Model
-
-class ExampleModel():
-    example_id    = columns.UUID(primary_key=True, default=uuid.uuid4)
-    example_type  = columns.Integer(index=True)
-    created_at    = columns.DateTime()
-    description   = columns.Text(required=False)
+from django_cassandra_engine import DjangoCassandraModel
+from django.db import connection
 
 # Create your models here.
 
 #Models of tables from keyspaces
 #Tables from KEYSPACE techfossguru
-class Employee():
+class Employee(DjangoCassandraModel):
     emp_id = columns.UUID(primary_key=True, default=uuid.uuid4)
     city = columns.Text()
     ename = columns.Text()
     sal = columns.Double()
-
+    
 #Tables from KEYSPACE beta
-class Fullstack():
+class Fullstack(DjangoCassandraModel):
     id = columns.UUID(primary_key = True)
     contents = columns.Text()
     end_time = columns.Double()
@@ -37,7 +32,7 @@ class Fullstack():
     valid = columns.Text()
 
 
-class Teststack():
+class Teststack(DjangoCassandraModel):
     id = columns.UUID(primary_key = True)
     contents = columns.Text()
     end_time = columns.Double()
@@ -54,7 +49,7 @@ class Teststack():
     turnaround_time = columns.Double()
     valid = columns.Text()
 
-class Pytest():
+class Pytest(DjangoCassandraModel):
     id = columns.UUID(primary_key = True)
     end_time = columns.Double()
     fd = columns.Integer()
@@ -70,13 +65,13 @@ class Pytest():
     turnaround_time = columns.Double()
     valid = columns.Text()
 
-class Error():
+class Error(DjangoCassandraModel):
     id = columns.UUID(primary_key = True)
     error =  columns.Text()
     msg = columns.Text()
 
 #OPENSTACK TABLE - USED FOR USERS??
-class Openstack():
+class Openstack(DjangoCassandraModel):
     id = columns.UUID(primary_key = True)
     end_time = columns.Double()
     fd = columns.Integer()

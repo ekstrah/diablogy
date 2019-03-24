@@ -74,19 +74,26 @@ WSGI_APPLICATION = 'diablogy_website.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+from cassandra import ConsistencyLevel
+
 DATABASES = {
     'default': {
-    'ENGINE': 'django_cassandra_engine',
-    'NAME': 'datacenter1',
-    'Test_NAME': 'test_db',
-    'HOST': '155.230.91.227',
-    'PORT': '9160',         
-    'OPTIONS': {
+        'ENGINE': 'django_cassandra_engine',
+        'NAME': 'database',
+        'Test_NAME': 'database',
+        'HOST': '155.230.91.227', 
+        'PORT': '9042', 
+        'OPTIONS': {
             'replication': {
-                'strategy_class': 'SimpleStrategy',
-                'replication_factor': 1,
-            }
-        }
+                'strategy_class': 'SimpleStragtegy',
+                'replicaton_factor': 2
+            },
+            'session': {
+                'default_timeout': 10,
+                'default_fetch_size': 10000
+                # + All options for cassandra.cluster.Session()
+                }
+        }        
     }
 }
 
