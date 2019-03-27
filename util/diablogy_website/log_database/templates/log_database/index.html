@@ -1,9 +1,133 @@
-{% if rows %}
-    <ul>
-    {% for row in rows %}
-        <li><a href="{% url 'details' row.emp_id %} ">{{ row.emp_id }}</a>{{ row.ename }} , {{ row.city }} , {{row.sal }}</li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No data is available.</p>
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <script src="main.js"></script>
+</head>
+<body>
+    <h1>Employee Table</h1>
+    <table style="width:100%" class="table">
+        {% if rows %}
+        <tr>
+            <th>Employee ID</th>
+            <th>Name</th> 
+            <th>City</th>
+            <th>Salary</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td><a href="{% url 'details' row.emp_id %}">{{row.emp_id}}</a></td>
+            <td>{{row.ename}}</td>
+            <td>{{row.city}}</td>
+            <td>{{row.sal}}</td>
+        {% endfor %}
+        </tr>
+        {% else %}
+        <tr>
+            <td>No data available</td>
+        </tr>
+        {% endif %}
+      </table>
+      <h1>Fullstack Table (Limited at 10 - scrolling feature yet)</h1>
+      <table style="width:100%" class="table">
+        {% if fullstack %}
+        <tr>
+            <th>ID</th>
+            <th>Contents</th> 
+            <th>End Time</th>
+            <th>FD</th>
+            <th>Host Name</th>
+            <th>Pipe Value</th>
+            <th>Process ID</th>
+            <th>Return Byte</th>
+            <th>Socket Type</th>
+            <th>FD</th>
+            <th>Start Time</th>
+            <th>System call</th>
+            <th>Thread ID</th>
+            <th>Turnaround Time</th>
+            <th>Valid</th>
+
+        </tr>
+        {% for row in fullstack %}
+        <tr>
+            <td>{{row.id}}</td>
+            <td>{{row.contents}}</td>
+            <td>{{row.end_time}}</td>
+            <td>{{row.fd}}</td>
+            <td>{{row.host_name}}</td>
+            <td>{{row.pipe_val}}</td>
+            <td>{{row.proc_id}}</td>
+            <td>{{row.proc_name}}</td>
+            <td>{{row.return_byte}}</td>
+            <td>{{row.sock_type}}</td>
+            <td>{{row.start_time}}</td>
+            <td>{{row.sys_call}}</td>
+            <td>{{row.thread_id}}</td>
+            <td>{{row.turnaround_time}}</td>
+            <td>{{row.valid}}</td>
+        {% endfor %}
+        </tr>
+        {% else %}
+        <tr>
+            <td>No data available</td>
+        </tr>
+        {% endif %}
+
+      </table>
+
+
+      <h1>Teststack Table</h1>
+      <table style="width:100%" class="table">
+        {% if teststack %}
+        <tr>
+            <th>ID</th>
+            <th>Contents</th> 
+            <th>End Time</th>
+            <th>FD</th>
+            <th>Host Name</th>
+            <th>Pipe Value</th>
+            <th>Process ID</th>
+            <th>Return Byte</th>
+            <th>Socket Type</th>
+            <th>FD</th>
+            <th>Start Time</th>
+            <th>System call</th>
+            <th>Thread ID</th>
+            <th>Turnaround Time</th>
+            <th>Valid</th>
+
+        </tr>
+        {% for row in teststack %}
+        <tr>
+            <td>{{row.id}}</td>
+            <td>{{row.contents}}</td>
+            <td>{{row.end_time}}</td>
+            <td>{{row.fd}}</td>
+            <td>{{row.host_name}}</td>
+            <td>{{row.pipe_val}}</td>
+            <td>{{row.proc_id}}</td>
+            <td>{{row.proc_name}}</td>
+            <td>{{row.return_byte}}</td>
+            <td>{{row.sock_type}}</td>
+            <td>{{row.start_time}}</td>
+            <td>{{row.sys_call}}</td>
+            <td>{{row.thread_id}}</td>
+            <td>{{row.turnaround_time}}</td>
+            <td>{{row.valid}}</td>
+        {% endfor %}
+        </tr>
+        {% else %}
+        <tr>
+            <td>No data available</td>
+        </tr>
+        {% endif %}
+      </table>
+
+      <button><a href="{% url 'newQuery' %}">Click here to insert new query</a></button>
+    </body>
+</html>

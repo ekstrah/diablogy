@@ -15,7 +15,7 @@ from cassandra.query import SimpleStatement
 #Tables from KEYSPACE techfossguru
 class Employee(DjangoCassandraModel):
     __keyspace__ = 'techfossguru'
-    emp_id = columns.UUID(primary_key=True)
+    emp_id = columns.Integer(primary_key=True)
     city = columns.Text()
     ename = columns.Text()
     sal = columns.Double()
@@ -43,7 +43,7 @@ class Fullstack(DjangoCassandraModel):
     def __str__(self):
         return self.id
 
-class Teststack(Model):
+class Teststack(DjangoCassandraModel):
     __keyspace__ = 'beta'
     id = columns.Integer(primary_key = True)
     contents = columns.Text()
@@ -64,7 +64,7 @@ class Teststack(Model):
         return self.id
 
 
-class Pytest(Model):
+class Pytest(DjangoCassandraModel):
     id = columns.Integer(primary_key = True)
     end_time = columns.Double()
     fd = columns.Integer()
@@ -83,7 +83,7 @@ class Pytest(Model):
         return self.id
 
 
-class Error(Model):
+class Error(DjangoCassandraModel):
     id = columns.Integer(primary_key = True)
     error =  columns.Text()
     msg = columns.Text()
@@ -91,7 +91,7 @@ class Error(Model):
         return self.id
 
 #OPENSTACK TABLE - USED FOR USERS??
-class Openstack(Model):
+class Openstack(DjangoCassandraModel):
     id = columns.Integer(primary_key = True)
     end_time = columns.Double()
     fd = columns.Integer()
@@ -108,27 +108,3 @@ class Openstack(Model):
     valid = columns.Text()
     def __str__(self):
         return self.id
-
-#setup connection to cassandra server
-connection.setup(['155.230.91.227'], "cqlengine", protocol_version=3)
-
-cluster = Cluster(['155.230.91.227'])
-session = cluster.connect('beta')
-rows = session.execute("select * from fullstack;")
-for row in rows:
-    example = Fullstack.create(
-        contents = row.contents,
-        end_time = row.end_time,
-        fd = row.fd,
-        host_name = row.host_name,
-        pipe_val = row.pipe_val,
-        proc_id = row.proc_id,
-        proc_name = row.proc_name,
-        return_byte = row.return_byte,
-        sock_type = row.sock_type,
-        start_time = row.sock_type,
-        sys_call = row.sys_call,
-        thread_id = row.thread_id,
-        turnaround_time = row.turnaround_time,
-        valid = row.valid
-    )
