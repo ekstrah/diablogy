@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'log_database',
 ]
 
 MIDDLEWARE = [
@@ -77,24 +78,23 @@ WSGI_APPLICATION = 'diablogy_website.wsgi.application'
 from cassandra import ConsistencyLevel
 
 DATABASES = {
-    'default': {
+    'log_database': {
         'ENGINE': 'django_cassandra_engine',
-        'NAME': 'database',
-        'Test_NAME': 'database',
+        'NAME': 'beta',
+        'Test_NAME': 'test',
         'HOST': '155.230.91.227', 
         'PORT': '9042', 
         'OPTIONS': {
             'replication': {
                 'strategy_class': 'SimpleStragtegy',
                 'replicaton_factor': 2
-            },
-            'session': {
-                'default_timeout': 10,
-                'default_fetch_size': 10000
-                # + All options for cassandra.cluster.Session()
-                }
-        }        
-    }
+            }
+        }
+    },
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'user_data',
+    }         
 }
 
 
