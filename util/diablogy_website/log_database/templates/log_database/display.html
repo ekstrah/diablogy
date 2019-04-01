@@ -10,9 +10,17 @@
 </head>
 <body>
     <table style="width:100%" class="table">
-
+        <button><a href="{% url 'getKeyspaces' %}">Click here to go back</a></button>
+        <BR>
+        <h4>Select table column ( fix form for search):</h4>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <!--Form doesn't work, idk why :/ -->
+            {{ tableForm }}
+            <input type="submit" value="Submit">
+        </form>
         {% if fullstack %}
-        <h1>Fullstack Table ( limited 10, no scrolling feature yet)</h1>
+        <h1>Fullstack Table ( limited 50, no scrolling feature yet)</h1>
         <tr>
             <th>ID</th>
             <th>Contents</th> 
@@ -94,7 +102,7 @@
         {% endif %}
 
         {% if openstack %}
-        <h1>Openstack Table ( limited 10, no scrolling feature yet)</h1>
+        <h1>Openstack Table ( limited 50, no scrolling feature yet)</h1>
         <tr>
             <th>ID</th>
             <th>Contents</th> 

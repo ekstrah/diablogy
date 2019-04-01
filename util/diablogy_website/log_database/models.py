@@ -22,6 +22,13 @@ class Keyspaces(Model):
     def __str(self):
         return self.keyspace_name
 
+class TableObject(Model):
+    id = columns.Integer(primary_key=True)
+    table_column_name = columns.Text()
+
+    def __str(self):
+        return self.table_column_name
+
 #Models of tables from keyspaces
 #Tables from KEYSPACE techfossguru
 class Employee(DjangoCassandraModel):

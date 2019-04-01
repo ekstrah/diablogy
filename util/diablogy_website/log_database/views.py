@@ -28,9 +28,9 @@ def displayTables(request):
     cluster = Cluster(['155.230.91.227'])
     session = cluster.connect(keyspace.keyspace_name)
     if keyspace.keyspace_name == "beta":
-        fullstack = session.execute("select * from fullstack limit 10;")
+        fullstack = session.execute("select * from fullstack limit 50;")
         error = session.execute("select * from error;")
-        openstack = session.execute("select * from openstack")
+        openstack = session.execute("select * from openstack limit 50")
         context = {
         'fullstack': fullstack,
         'error': error,
@@ -62,4 +62,22 @@ def getKeyspaces(request):
     else:
         form = KeyspaceForm()
     return render(request,'log_database/index.html', {'form': form})
+
+def tableDetails(request):
+    if request.method == 'POST':
+        form = TableForm(request.Post)
+        if form.is_valid():
+            if TableObject.objects.if_not_exits():
+                table = TableObject.objects().create(
+                    table_column_name = form.cleaned_data('table_columns'),
+                    id = 1
+                )
+            else:
+                table = TableObject.objects(id=1).update(
+                    table_column_name = form.cleaned_data('table_columns')
+                )
+            return HttpResponseRedirect('display/')
+        else:
+            form = TableForm()
+        return render(request, 'log_database/display.html', {'tableForm': form})
 
