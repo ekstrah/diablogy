@@ -4,12 +4,23 @@ from django_cassandra_engine.models import DjangoCassandraModel
 from cassandra.cqlengine.models import Model
 from cassandra.cqlengine import connection
 from cassandra.cqlengine.management import sync_table
+from cassandra.cqlengine.query import ModelQuerySet
 from cassandra.cluster import Cluster, BatchStatement
 from cassandra.query import SimpleStatement
-
+from django.db import models
+from cassandra.cqlengine.management import sync_table
 
 # Create your models here.
 
+
+
+
+class Keyspaces(Model):
+    id = columns.Integer(primary_key=True)
+    keyspace_name = columns.Text()
+
+    def __str(self):
+        return self.keyspace_name
 
 #Models of tables from keyspaces
 #Tables from KEYSPACE techfossguru
@@ -60,9 +71,9 @@ class Teststack(DjangoCassandraModel):
     thread_id = columns.Text()
     turnaround_time = columns.Double()
     valid = columns.Text()
+
     def __str__(self):
         return self.id
-
 
 class Pytest(DjangoCassandraModel):
     id = columns.Integer(primary_key = True)
@@ -90,7 +101,6 @@ class Error(DjangoCassandraModel):
     def __str__(self):
         return self.id
 
-#OPENSTACK TABLE - USED FOR USERS??
 class Openstack(DjangoCassandraModel):
     id = columns.Integer(primary_key = True)
     end_time = columns.Double()

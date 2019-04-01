@@ -4,8 +4,8 @@ from . import views
 
 urlpatterns = [
     #change to the get_data view
-    path('',views.DisplayRows, name="DisplayRows"),
-    path('newQuery/',views.newQuery, name="newQuery"),
+    path('',views.getKeyspaces, name="getKeyspaces"),
     path('<int:emp_id>/', views.details, name='details'),
+    path('display/', views.displayTables, name='displayTables')
 
 ]
