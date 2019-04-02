@@ -107,6 +107,8 @@ pid_t (*libc_fork) (void);
 int (*libc_open) (const char *filename, int flags, ...);
 int (*libc_open64) (const char *filename, int flags, ...);
 int (*libc_close) (int fd);
+int (*libc_fclose)(FILE *stream);
+FILE *(*libc_fopen)(const char *pathname, const char *mode);
 ssize_t (*libc_pwritev64)(int fd, const struct iovec * iov, int iovcnt, off64_t offset);
 size_t (*libc_fwrite_unlocked)(const void *ptr, size_t size, size_t nmemb, FILE *stream);
 
@@ -760,38 +762,43 @@ static int __init_shared_memory(void)
 
 //Constructor that will be invoked before main function
 //Modified by wjhan ...2018.02.08
-
+int constructor_called = 0; // Flag that tells if the constructor has been called yet
 void __attribute__((constructor)) bluecoat_init(void)
 {
-	// printf("Constructor Invoked!\n");
-	// Run listener thread that handles incoming socket request to a specific port num
+	if (!constructor_called) { // To ensure constructor is only called once
+		constructor_called = 1;
+		// printf("Constructor Invoked!\n");
+		// Run listener thread that handles incoming socket request to a specific port num
 
-	// TODO: if turn_on_port and turn_off_port is closed, do init_listener(). else, pass
-	//init_listener(turn_on_logging, TURN_ON_LOGGING_PORT);
-	//init_listener(turn_off_logging, TURN_OFF_LOGGING_PORT);
-	// printf("To turn off logging : telnet localhost %d\n", TURN_OFF_LOGGING_PORT);
-	// printf("To turn on logging : telnet localhost %d\n", TURN_ON_LOGGING_PORT);
+		// TODO: if turn_on_port and turn_off_port is closed, do init_listener(). else, pass
+		//init_listener(turn_on_logging, TURN_ON_LOGGING_PORT);
+		//init_listener(turn_off_logging, TURN_OFF_LOGGING_PORT);
+		// printf("To turn off logging : telnet localhost %d\n", TURN_OFF_LOGGING_PORT);
+		// printf("To turn on logging : telnet localhost %d\n", TURN_ON_LOGGING_PORT);
 
-	//syslog(LOG_INFO, "bluecoat_init() pid:%d LD_PRELOAD:%s \n", getpid(), getenv("LD_PRELOAD"));
-	libc_fwrite_unlocked = dlsym(RTLD_NEXT, "fwrite_unlocked");
-	libc_open = dlsym(RTLD_NEXT, "open");
-	libc_open64 = dlsym(RTLD_NEXT, "open64");
-	libc_write = dlsym(RTLD_NEXT, "write");
-	libc_writev = dlsym(RTLD_NEXT, "writev");
-	libc_fwrite = dlsym(RTLD_NEXT, "fwrite");
-	libc_pwrite = dlsym(RTLD_NEXT, "pwrite");
-	libc_pwrite64 = dlsym(RTLD_NEXT, "pwrite64");
-	libc_pwritev = dlsym(RTLD_NEXT, "pwritev");
-	libc_pwritev64 = dlsym(RTLD_NEXT, "pwritev64");
-//	libc_pwritev64 = dlsym(RTLD_NEXT, "pwritev64");
-	libc_close = dlsym(RTLD_NEXT, "close");
-//	libc_fwrite_unlocked = dlsym(RTLD_NEXT, "fwrite_unlocked");
-	init_progname();
+		//syslog(LOG_INFO, "bluecoat_init() pid:%d LD_PRELOAD:%s \n", getpid(), getenv("LD_PRELOAD"));
+		libc_fwrite_unlocked = dlsym(RTLD_NEXT, "fwrite_unlocked");
+		libc_open = dlsym(RTLD_NEXT, "open");
+		libc_open64 = dlsym(RTLD_NEXT, "open64");
+		libc_fopen = dlsym(RTLD_NEXT, "fopen");
+		libc_write = dlsym(RTLD_NEXT, "write");
+		libc_writev = dlsym(RTLD_NEXT, "writev");
+		libc_fwrite = dlsym(RTLD_NEXT, "fwrite");
+		libc_pwrite = dlsym(RTLD_NEXT, "pwrite");
+		libc_pwrite64 = dlsym(RTLD_NEXT, "pwrite64");
+		libc_pwritev = dlsym(RTLD_NEXT, "pwritev");
+		libc_pwritev64 = dlsym(RTLD_NEXT, "pwritev64");
+	//	libc_pwritev64 = dlsym(RTLD_NEXT, "pwritev64");
+		libc_close = dlsym(RTLD_NEXT, "close");
+		libc_fclose = dlsym(RTLD_NEXT, "fclose");
+	//	libc_fwrite_unlocked = dlsym(RTLD_NEXT, "fwrite_unlocked");
+		init_progname();
 
-	setlogmask (LOG_UPTO (LOG_INFO));
-	openlog ("bluecoat", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
+		setlogmask (LOG_UPTO (LOG_INFO));
+		openlog ("bluecoat", LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
 
-	__debug_log_fd_to_use = findUnusedFD (DEBUG_LOG_FD);
+		__debug_log_fd_to_use = findUnusedFD (DEBUG_LOG_FD);
+	}
 }
 
 // Destructor that will be invoke after main() function
@@ -1213,19 +1220,18 @@ int close (int fd) {
 }
 
 int fclose(FILE *stream) {
-	int (*original_fclose)(FILE*);
-	original_fclose = dlsym(RTLD_NEXT, "fclose");
-	
+	bluecoat_init(); // fclose can get called before the constructor
+
 	// Check flag for monitoring on/off
 	if (!FLAG_LOGGING)
-		return original_fclose(stream);
+		return libc_fclose(stream);
 
 	const int fd = fileno(stream);
 	char path_buffer[FD_PATH_SIZE]; // for PATH of FD (to the log)
 	char *path_buffer_ptr = getPathByFd(getpid(), fd, path_buffer);
 
 	SET_START_TIME();
-	const int ret = original_fclose(stream);
+	const int ret = libc_fclose(stream);
 	const int save_errno = errno;
 	SET_END_TIME();
 
@@ -1234,6 +1240,39 @@ int fclose(FILE *stream) {
 	p += snprintf (p, PRINT_LIMIT, "fclose %d %d ", ret, fd);
 	// Write path that `fd` is linking
 	p += snprintf (p, PRINT_LIMIT, " %s ", path_buffer_ptr); // add by wjhan(18-03-07)
+
+	dbg("%s", printBuf);
+	//printf("%s\n", printBuf);
+	errno = save_errno;
+
+	return ret;
+}
+
+FILE *fopen(const char *pathname, const char *mode) {
+	bluecoat_init(); // fopen can get called before the constructor
+
+	// Check flag for monitoring on/off
+	if (!FLAG_LOGGING)
+		return libc_fopen(pathname, mode);
+
+	SET_START_TIME();
+	const FILE *ret = libc_fopen(pathname, mode);
+	const int save_errno = errno;
+	SET_END_TIME();
+
+	const int fd = (ret == NULL ? -1 : fileno(ret)); // fileno(NULL) causes segfault
+
+	// Get fopen target path
+	char path_buffer[FD_PATH_SIZE];
+	if (realpath(pathname, path_buffer) != NULL) // Expand relative path
+		path_buffer[MIN(FD_PATH_SIZE, PATH_MAX) - 1] = '\0'; // Null terminate string
+	else
+		path_buffer[0] = '\0';
+
+	char printBuf[PRINT_BUF_SIZE];
+	char *p = printBuf;
+	p += snprintf (p, PRINT_LIMIT, "fopen %d %d ", 0, fd);
+	p += snprintf (p, PRINT_LIMIT, " %s ", path_buffer);
 
 	dbg("%s", printBuf);
    	//printf("%s\n", printBuf);
