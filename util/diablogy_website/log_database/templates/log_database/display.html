@@ -17,7 +17,6 @@
             {{ tableForm }}
             <input type="submit" value="Submit">
         </form>
-        <button><a href="{% url 'newQuery' %}">Click here to insert new query</a></button>
         {% if fullstack %}
         <table style="width:100%" class="table">
             <div>
@@ -108,6 +107,7 @@
         <table style="width:100%" class="table">
             <div>
                 <h1>Open Table ( limited 50, no scrolling feature yet)</h1>
+                <button><a href="{% url 'newOpenstackQuery' %}">Click here to insert new query</a></button>
                 <tr>
                     <th>ID</th>
                     <th>Contents</th> 
@@ -154,6 +154,7 @@
         {% if employee %}
         <table style="width:100%" class="table">
         <h1>Employee Table</h1>
+        <button><a href="{% url 'newEmployeeQuery' %}">Click here to insert new query</a></button>
         <tr>
             <th>Employee ID</th>
             <th>Name</th> 

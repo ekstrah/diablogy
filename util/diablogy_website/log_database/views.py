@@ -81,7 +81,7 @@ def tableDetails(request):
             form = TableForm()
         return render(request, 'log_database/display.html', {'tableForm': form})
 
-def newQuery(request):
+def newOpenstackQuery(request):
     if request.method == 'POST':
         form = InsertQueryForm(request.POST)
         if form.is_valid():
@@ -89,4 +89,25 @@ def newQuery(request):
             return HttpResponseRedirect('./')
     else:
         form = InsertQueryForm()
+    return render(request, 'log_database/insertOpen.html', {'OpenstackForm': form })
+
+def newFullstackQuery(request):
+    if request.method == 'POST':
+        form = InsertFullStackForm(request.POST)
+        if form.is_valid():
+            new_query = form.save()
+            return HttpResponseRedirect('./')
+    else:
+        form = InsertFullStackForm()
     return render(request, 'log_database/insert.html', {'form': form })
+
+
+def newEmployeeQuery(request):
+    if request.method == 'POST':
+        form = InsertEmployeeForm(request.POST)
+        if form.is_valid():
+            new_query = form.save()
+            return HttpResponseRedirect('./')
+    else:
+        form = InsertEmployeeForm()
+    return render(request, 'log_database/insertEmployee.html', {'EmployeeForm': form })

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Openstack, Fullstack
+from .models import Openstack, Fullstack , Employee
 
 CHOICES = (
     ('beta', 'Beta'),
@@ -47,27 +47,24 @@ class InsertQueryForm(forms.ModelForm):
         'sys_call', 'thread_id' , 'turnaround_time', 'valid'
         ]
 
+class InsertOpenStackForm(forms.ModelForm):
+    class Meta:
+        model = Openstack   
+        fields = ['id', 'end_time', 'fd', 'host_name', 'pipe_val',
+        'proc_id', 'proc_name', 'return_byte', 'sock_type', 'start_time',
+        'sys_call', 'thread_id' , 'turnaround_time', 'valid'
+        ]
 
-#Doesn't work cuz there is no objects in Fullstack
+class InsertFullStackForm(forms.ModelForm):
+    class Meta:
+        model = Fullstack   
+        fields = ['id', 'contents', 'end_time', 'fd', 'host_name', 'pipe_val',
+        'proc_id', 'proc_name', 'return_byte', 'sock_type', 'start_time',
+        'sys_call', 'thread_id' , 'turnaround_time', 'valid'
+        ]
 
+class InsertEmployeeForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = ['emp_id', 'city', 'ename', 'sal']
 
-#class TableForm(ModelForm):
-#    class Meta:
-#        model = Fullstack
- #       fields = [
-#            'id',
-#            'contents',
- #           'end_time', 
-  #          'fd',
-   #         'host_name',
-    #        'pipe_val',
-     #       'proc_id',
-      #      'proc_name',
-       #     'return_byte',
-        #    'sock_type',
-         #   'start_time', 
-          #  'sys_call',
-           # 'thread_id',
-            #'turnaround_time', 
-            #'valid', 
-       # ]
