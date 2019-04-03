@@ -9,9 +9,7 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <table style="width:100%" class="table">
         <button><a href="{% url 'getKeyspaces' %}">Click here to go back</a></button>
-        <BR>
         <h4>Select table column ( fix form for search):</h4>
         <form action="" method="POST">
             {% csrf_token %}
@@ -19,45 +17,50 @@
             {{ tableForm }}
             <input type="submit" value="Submit">
         </form>
+        <button><a href="{% url 'newQuery' %}">Click here to insert new query</a></button>
         {% if fullstack %}
-        <h1>Fullstack Table ( limited 50, no scrolling feature yet)</h1>
-        <tr>
-            <th>ID</th>
-            <th>Contents</th> 
-            <th>End Time</th>
-            <th>FD</th>
-            <th>Host Name</th>
-            <th>Pipe Value</th>
-            <th>Process ID</th>
-            <th>Return Byte</th>
-            <th>Socket Type</th>
-            <th>FD</th>
-            <th>Start Time</th>
-            <th>System call</th>
-            <th>Thread ID</th>
-            <th>Turnaround Time</th>
-            <th>Valid</th>
+        <table style="width:100%" class="table">
+            <div>
+                <h1>Fullstack Table ( limited 50, no scrolling feature yet)</h1>
+                <tr>
+                    <th>ID</th>
+                    <th>Contents</th> 
+                    <th>End Time</th>
+                    <th>FD</th>
+                    <th>Host Name</th>
+                    <th>Pipe Value</th>
+                    <th>Process ID</th>
+                    <th>Return Byte</th>
+                    <th>Socket Type</th>
+                    <th>FD</th>
+                    <th>Start Time</th>
+                    <th>System call</th>
+                    <th>Thread ID</th>
+                    <th>Turnaround Time</th>
+                    <th>Valid</th>
 
-        </tr>
-        {% for row in fullstack %}
-        <tr>
-            <td>{{row.id}}</td>
-            <td>{{row.contents}}</td>
-            <td>{{row.end_time}}</td>
-            <td>{{row.fd}}</td>
-            <td>{{row.host_name}}</td>
-            <td>{{row.pipe_val}}</td>
-            <td>{{row.proc_id}}</td>
-            <td>{{row.proc_name}}</td>
-            <td>{{row.return_byte}}</td>
-            <td>{{row.sock_type}}</td>
-            <td>{{row.start_time}}</td>
-            <td>{{row.sys_call}}</td>
-            <td>{{row.thread_id}}</td>
-            <td>{{row.turnaround_time}}</td>
-            <td>{{row.valid}}</td>
-        {% endfor %}
-        </tr>
+                </tr>
+                {% for row in fullstack %}
+                <tr>
+                    <td>{{row.id}}</td>
+                    <td>{{row.contents}}</td>
+                    <td>{{row.end_time}}</td>
+                    <td>{{row.fd}}</td>
+                    <td>{{row.host_name}}</td>
+                    <td>{{row.pipe_val}}</td>
+                    <td>{{row.proc_id}}</td>
+                    <td>{{row.proc_name}}</td>
+                    <td>{{row.return_byte}}</td>
+                    <td>{{row.sock_type}}</td>
+                    <td>{{row.start_time}}</td>
+                    <td>{{row.sys_call}}</td>
+                    <td>{{row.thread_id}}</td>
+                    <td>{{row.turnaround_time}}</td>
+                    <td>{{row.valid}}</td>
+                {% endfor %}
+                </tr>
+            </div>
+        </table>
         {% endif %}
 
         {% if error %}
@@ -102,49 +105,54 @@
         {% endif %}
 
         {% if openstack %}
-        <h1>Openstack Table ( limited 50, no scrolling feature yet)</h1>
-        <tr>
-            <th>ID</th>
-            <th>Contents</th> 
-            <th>End Time</th>
-            <th>FD</th>
-            <th>Host Name</th>
-            <th>Pipe Value</th>
-            <th>Process ID</th>
-            <th>Return Byte</th>
-            <th>Socket Type</th>
-            <th>FD</th>
-            <th>Start Time</th>
-            <th>System call</th>
-            <th>Thread ID</th>
-            <th>Turnaround Time</th>
-            <th>Valid</th>
+        <table style="width:100%" class="table">
+            <div>
+                <h1>Open Table ( limited 50, no scrolling feature yet)</h1>
+                <tr>
+                    <th>ID</th>
+                    <th>Contents</th> 
+                    <th>End Time</th>
+                    <th>FD</th>
+                    <th>Host Name</th>
+                    <th>Pipe Value</th>
+                    <th>Process ID</th>
+                    <th>Return Byte</th>
+                    <th>Socket Type</th>
+                    <th>FD</th>
+                    <th>Start Time</th>
+                    <th>System call</th>
+                    <th>Thread ID</th>
+                    <th>Turnaround Time</th>
+                    <th>Valid</th>
 
-        </tr>
-        {% for row in openstack %}
-        <tr>
-            <td>{{row.id}}</td>
-            <td>{{row.contents}}</td>
-            <td>{{row.end_time}}</td>
-            <td>{{row.fd}}</td>
-            <td>{{row.host_name}}</td>
-            <td>{{row.pipe_val}}</td>
-            <td>{{row.proc_id}}</td>
-            <td>{{row.proc_name}}</td>
-            <td>{{row.return_byte}}</td>
-            <td>{{row.sock_type}}</td>
-            <td>{{row.start_time}}</td>
-            <td>{{row.sys_call}}</td>
-            <td>{{row.thread_id}}</td>
-            <td>{{row.turnaround_time}}</td>
-            <td>{{row.valid}}</td>
-        {% endfor %}
-        </tr>
+                </tr>
+                {% for row in openstack %}
+                <tr>
+                    <td>{{row.id}}</td>
+                    <td>{{row.contents}}</td>
+                    <td>{{row.end_time}}</td>
+                    <td>{{row.fd}}</td>
+                    <td>{{row.host_name}}</td>
+                    <td>{{row.pipe_val}}</td>
+                    <td>{{row.proc_id}}</td>
+                    <td>{{row.proc_name}}</td>
+                    <td>{{row.return_byte}}</td>
+                    <td>{{row.sock_type}}</td>
+                    <td>{{row.start_time}}</td>
+                    <td>{{row.sys_call}}</td>
+                    <td>{{row.thread_id}}</td>
+                    <td>{{row.turnaround_time}}</td>
+                    <td>{{row.valid}}</td>
+                {% endfor %}
+                </tr>
+            </div>
+        </table>
         {% endif %}
-
+        
         
       
         {% if employee %}
+        <table style="width:100%" class="table">
         <h1>Employee Table</h1>
         <tr>
             <th>Employee ID</th>
@@ -160,8 +168,8 @@
             <td>{{row.sal}}</td>
         {% endfor %}
         </tr>
+        </table>
         {% endif %}
-    </table>
 
 </table>
 

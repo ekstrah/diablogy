@@ -81,3 +81,12 @@ def tableDetails(request):
             form = TableForm()
         return render(request, 'log_database/display.html', {'tableForm': form})
 
+def newQuery(request):
+    if request.method == 'POST':
+        form = InsertQueryForm(request.POST)
+        if form.is_valid():
+            new_query = form.save()
+            return HttpResponseRedirect('./')
+    else:
+        form = InsertQueryForm()
+    return render(request, 'log_database/insert.html', {'form': form })

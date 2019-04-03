@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import *
+from .models import Openstack, Fullstack
 
 CHOICES = (
     ('beta', 'Beta'),
@@ -39,7 +39,13 @@ class TableForm(forms.Form):
         choices = TABLE_CHOICES,
     )
 
-
+class InsertQueryForm(forms.ModelForm):
+    class Meta:
+        model = Openstack   
+        fields = ['id', 'end_time', 'fd', 'host_name', 'pipe_val',
+        'proc_id', 'proc_name', 'return_byte', 'sock_type', 'start_time',
+        'sys_call', 'thread_id' , 'turnaround_time', 'valid'
+        ]
 
 
 #Doesn't work cuz there is no objects in Fullstack
