@@ -108,7 +108,8 @@ $(LIBVPATH): $(VPATH_SRCS) libc.h utils.h
 
 BLUECOAT_SRCS=bluecoat.c
 $(LIBBLUECOAT): $(BLUECOAT_SRCS)
-	gcc -Wall -rdynamic -fPIC -c bluecoat.c
+# TODO: Remove -Wno-format-truncation flag and fix the warnings
+	gcc -Wall -rdynamic -fPIC -Wno-format-truncation -c bluecoat.c
 	gcc -shared -Wl,-soname,libbluecoat.so -Wl,-export-dynamic -o ../lib/libbluecoat.so bluecoat.o -ldl -lrt -lpthread
 	cp ../lib/libbluecoat.so /lib64/libbluecoat.so
 

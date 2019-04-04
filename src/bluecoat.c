@@ -684,7 +684,7 @@ init_progname ()
 	}
 
 	if (gethostname(hname, HOSTNAME_LEN)<0)
-		memcpy(hname, "unknown", HOSTNAME_LEN);
+		strncpy(hname, "unknown", HOSTNAME_LEN);
 };
 
 static int findUnusedFD (int fd)
@@ -703,60 +703,60 @@ mutex in shared memory for sync
 not used.. But if need to use mutex between each programs, use it.
 */
 #define retm_if(expr, val, msg) do { \
-    if (expr) \
-    { \
-        printf("%s\n", (msg)); \
-        return (val); \
-    } \
+	if (expr) \
+	{ \
+		printf("%s\n", (msg)); \
+		return (val); \
+	} \
 } while(0)
 
 #define retv_if(expr, val) do { \
-    if (expr) \
-    { \
-        return (val); \
-    } \
+	if (expr) \
+	{ \
+		return (val); \
+	} \
 } while(0)
 
 #define rete_if(expr, val, msg) do { \
-    if (expr) \
-    { \
-        printf("%s, errno : %d, errstr : %s\n", msg, errno, strerror(errno)); \
-        return (val); \
-    } \
+	if (expr) \
+	{ \
+		printf("%s, errno : %d, errstr : %s\n", msg, errno, strerror(errno)); \
+		return (val); \
+	} \
 } while(0)
 
 
 #define SHM_NAME "shm_lock"
 
 typedef struct shm_struct {
-    pthread_mutex_t mtx;
-    int idx;
+	pthread_mutex_t mtx;
+	int idx;
 } shm_struct_t;
 
 /*
 static shm_struct_t *shm;
 static int __init_shared_memory(void)
 {
-    int ret;
-    int shm_fd;
-    int shm_size;
+	int ret;
+	int shm_fd;
+	int shm_size;
 
-    shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    if (shm_fd == -1) {
-        printf("shm_open %d %s\n", errno, strerror(errno));
-        return -1;
-    }
+	shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	if (shm_fd == -1) {
+		printf("shm_open %d %s\n", errno, strerror(errno));
+		return -1;
+	}
 
-    shm_size = sizeof(shm_struct_t);
-    ret = ftruncate(shm_fd, shm_size);
-    rete_if(ret == -1, ret, "ftruncate");
+	shm_size = sizeof(shm_struct_t);
+	ret = ftruncate(shm_fd, shm_size);
+	rete_if(ret == -1, ret, "ftruncate");
 
-    shm = (shm_struct_t *)mmap(NULL, shm_size, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
-    retm_if(shm == MAP_FAILED, -1, "mmap()");
+	shm = (shm_struct_t *)mmap(NULL, shm_size, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
+	retm_if(shm == MAP_FAILED, -1, "mmap()");
 
-    close(shm_fd);
+	close(shm_fd);
 
-    return 0;
+	return 0;
 }
 */
 
@@ -1146,13 +1146,13 @@ int aio_write64(struct aiocb64 *aiocbp64) {
   char *p = printBuf;
   int fd = aiocbp64->aio_fildes;
   p += snprintf (p, PRINT_LIMIT, "aioi_write64 %d %d ", ret, fd);
-    p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
-        if (ret > 0) {
-                p += snprintf (p, PRINT_LIMIT, " ");
-                p += printData (p, PRINT_LIMIT, "aio_64 stuff" ,ret);
-        }
-        if (ret < 0)
-                p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
+	p += snprintf (p, PRINT_LIMIT, " %s ", getPathByFd(getpid(), fd, buffer_for_path)); // add by wjhan(18-03-07)
+		if (ret > 0) {
+				p += snprintf (p, PRINT_LIMIT, " ");
+				p += printData (p, PRINT_LIMIT, "aio_64 stuff" ,ret);
+		}
+		if (ret < 0)
+				p += snprintf (p, PRINT_LIMIT, " %s", ERR_STRING);
 	dbg("%s", printBuf);
 
   return ret;
@@ -1196,27 +1196,27 @@ ssize_t pwritev2(int fd, const struct iovec * iov, int iovcnt, off_t offset, int
 
 
 int close (int fd) {
-    SET_START_TIME();
+	SET_START_TIME();
 
-    char printBuf[PRINT_BUF_SIZE];
-    char *p = printBuf;
-    char tmpBuf2[PRINT_BUF_SIZE];
-    char *q2 = tmpBuf2;
+	char printBuf[PRINT_BUF_SIZE];
+	char *p = printBuf;
+	char tmpBuf2[PRINT_BUF_SIZE];
+	char *q2 = tmpBuf2;
 
-    const int retVal = libc_close (fd);
-    SET_END_TIME();
+	const int retVal = libc_close (fd);
+	SET_END_TIME();
 
-    if (retVal>-1) {
-            //const int save_errno = errno;
-            q2 += snprintf (q2, PRINT_LIMIT, "close %d %d ", retVal, fd);
-	    q2 += snprintf(q2, PRINT_LIMIT, "None None");
-            //if (retVal<0) q2 += snprintf (q2, PRINT_LIMIT, "%s", ERR_STRING);
-            dbg ("%s", tmpBuf2);
+	if (retVal>-1) {
+		//const int save_errno = errno;
+		q2 += snprintf (q2, PRINT_LIMIT, "close %d %d ", retVal, fd);
+		q2 += snprintf(q2, PRINT_LIMIT, "None None");
+		//if (retVal<0) q2 += snprintf (q2, PRINT_LIMIT, "%s", ERR_STRING);
+		dbg ("%s", tmpBuf2);
 
 //	    printf("%s\n", tmpBuf2);
-    }
+	}
 
-    return retVal;
+	return retVal;
 }
 
 int fclose(FILE *stream) {
@@ -1256,7 +1256,7 @@ FILE *fopen(const char *pathname, const char *mode) {
 		return libc_fopen(pathname, mode);
 
 	SET_START_TIME();
-	const FILE *ret = libc_fopen(pathname, mode);
+	FILE * const ret = libc_fopen(pathname, mode);
 	const int save_errno = errno;
 	SET_END_TIME();
 
@@ -1275,7 +1275,7 @@ FILE *fopen(const char *pathname, const char *mode) {
 	p += snprintf (p, PRINT_LIMIT, " %s ", path_buffer);
 
 	dbg("%s", printBuf);
-   	//printf("%s\n", printBuf);
+	//printf("%s\n", printBuf);
 	errno = save_errno;
 
 	return ret;
