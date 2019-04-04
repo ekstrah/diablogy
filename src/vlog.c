@@ -451,7 +451,7 @@ int main (int argc, char **argv)
 		get_insert_query_string(buf, query); /* Create query */
 		if (check_logfile == 1) {
 			execute_cassandra_insert(query); /* Run querry */
-		//}
+		}
 			// Check flag(defult:TRUE(1)) and Write the logs(buf) to file descriptor (logfd : LOG_FILE = /tmp/vpath.log)
 			while ( FLAG_FILE_WRITE && n > 0) {
 				int r = write (2, p, n);
@@ -462,7 +462,7 @@ int main (int argc, char **argv)
 				p += r;
 				n -= r;
 			}
-		}
+		//}
 	}
 
 	// terminate_cassandra_driver(); /* Terminate Cassandra Driver */
