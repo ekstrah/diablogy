@@ -239,7 +239,6 @@ char* get_insert_query_string(char* log, char* insert_query_string) {
 
 	char split_list[COL_NUM][MAX_LOG_SIZE];
 	char pre[MAX_LOG_SIZE] = "INSERT INTO "; // + "TABLE_NAME"
-	char check[100];
 	// cqlsh> CREATE TABLE beta.openstack (id int PRIMARY KEY, start_name double, end_time double, turnaround_time double, proc_name varchar, host_name varchar, proc_id varchar, thread_id varchar, sys_call varchar, return_byte int, fd int, pipe_val varchar, valid varchar);
 
 	char col_name_string[MAX_LOG_SIZE] = "(id, start_time, end_time, turnaround_time, proc_name, host_name, proc_id, thread_id, sys_call, return_byte, fd, pipe_val, contents, valid";
@@ -306,7 +305,7 @@ void setup_cassandra_driver() {
 /* Run queries...insert */
 void execute_cassandra_insert(char* query_string) {
 
-	const char * err_str ;
+	//const char * err_str ;
 	/* Create a statement with zero parameters */
 	CassStatement* statement = cass_statement_new(query_string, 0);
 	query_future = cass_session_execute(session, statement);
@@ -316,7 +315,7 @@ void execute_cassandra_insert(char* query_string) {
 
 	/* This will block until the query has finished */
 	rc = cass_future_error_code(query_future);
-	err_str = cass_error_desc(rc);
+	//err_str = cass_error_desc(rc);
 	
 	//Just ignoring the error at the moment but, needs to fix it later
 	//if(rc == 0) {
