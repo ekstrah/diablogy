@@ -112,49 +112,6 @@ FILE *(*libc_fopen)(const char *pathname, const char *mode);
 ssize_t (*libc_pwritev64)(int fd, const struct iovec * iov, int iovcnt, off64_t offset);
 size_t (*libc_fwrite_unlocked)(const void *ptr, size_t size, size_t nmemb, FILE *stream);
 
-//pid_t (*libc_vfork) (void);
-//void *(*libc_dlopen)(const char *filename, int flag);
-//typedef int (*openX_proto)(char const *, int, ...);
-//static openX_proto libc_open = NULL;
-//static openX_proto libc_open64= NULL;
-
-
-/* For logging on/off  */
-// Register a listener thread that handles incoming request to a specific port num
-/*
-static void init_listener (thread_func func, int port)
-{
-	// Preparing for socket connections
-	int sock;
-	struct sockaddr_in addr;
-	if ((sock = socket (PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-		perror ("socket");
-
-	memset (&addr, 0, sizeof (addr));
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl (INADDR_ANY);
-	addr.sin_port = htons (port);
-
-	int yes = 1;
-	if (setsockopt (sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof (int)) == -1) {
-		perror ("setsockopt error");
-	}
-
-	if (bind (sock, (struct sockaddr *) &addr, sizeof (addr)) < 0)
-		perror ("bind error");
-
-	if (listen (sock, 10) < 0)
-		perror ("listen error");
-
-	long lsock = sock;
-	pthread_t threadID;
-	// Run thread function that handles incoming socket connection request
-	if (pthread_create (&threadID, NULL, func, (void*)lsock) != 0) {
-		perror ("pthread_create error");
-	}
-}
-*/
-
 //Thread function to handle request to turn off the logging
 void * turn_off_logging (void *data)
 {
@@ -454,34 +411,6 @@ static inline const char *sockTypeString (int sockType)
 	}
 }
 
-/*
-   static const char *protocolString (int protocol)
-   {
-   switch (protocol) {
-   case IPPROTO_IP: return "IPPROTO_IP";
-   case IPPROTO_ICMP: return "IPPROTO_ICMP";
-   case IPPROTO_IGMP: return "IPPROTO_IGMP";
-   case IPPROTO_IPIP: return "IPPROTO_IPIP";
-   case IPPROTO_TCP: return "IPPROTO_TCP";
-   case IPPROTO_EGP: return "IPPROTO_EGP";
-   case IPPROTO_PUP: return "IPPROTO_PUP";
-   case IPPROTO_UDP: return "IPPROTO_UDP";
-   case IPPROTO_IDP: return "IPPROTO_IDP";
-   case IPPROTO_RSVP: return "IPPROTO_RSVP";
-   case IPPROTO_GRE: return "IPPROTO_GRE";
-   case IPPROTO_IPV6: return "IPPROTO_IPV6";
-   case IPPROTO_ESP: return "IPPROTO_ESP";
-   case IPPROTO_AH: return "IPPROTO_AH";
-   case IPPROTO_PIM: return "IPPROTO_PIM";
-   case IPPROTO_COMP: return "IPPROTO_COMP";
-   case IPPROTO_SCTP: return "IPPROTO_SCTP";
-   case IPPROTO_RAW: return "IPPROTO_RAW";
-   case IPPROTO_MAX: return "IPPROTO_MAX";
-   default: return "protocol_unknown";
-   }
-   }
-   */
-
 const char *afString (int addrFamily)
 {
 	switch (addrFamily) {
@@ -733,33 +662,6 @@ typedef struct shm_struct {
 	int idx;
 } shm_struct_t;
 
-/*
-static shm_struct_t *shm;
-static int __init_shared_memory(void)
-{
-	int ret;
-	int shm_fd;
-	int shm_size;
-
-	shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-	if (shm_fd == -1) {
-		printf("shm_open %d %s\n", errno, strerror(errno));
-		return -1;
-	}
-
-	shm_size = sizeof(shm_struct_t);
-	ret = ftruncate(shm_fd, shm_size);
-	rete_if(ret == -1, ret, "ftruncate");
-
-	shm = (shm_struct_t *)mmap(NULL, shm_size, PROT_READ|PROT_WRITE, MAP_SHARED, shm_fd, 0);
-	retm_if(shm == MAP_FAILED, -1, "mmap()");
-
-	close(shm_fd);
-
-	return 0;
-}
-*/
-
 //Constructor that will be invoked before main function
 //Modified by wjhan ...2018.02.08
 int constructor_called = 0; // Flag that tells if the constructor has been called yet
@@ -769,12 +671,6 @@ void __attribute__((constructor)) bluecoat_init(void)
 		constructor_called = 1;
 		// printf("Constructor Invoked!\n");
 		// Run listener thread that handles incoming socket request to a specific port num
-
-		// TODO: if turn_on_port and turn_off_port is closed, do init_listener(). else, pass
-		//init_listener(turn_on_logging, TURN_ON_LOGGING_PORT);
-		//init_listener(turn_off_logging, TURN_OFF_LOGGING_PORT);
-		// printf("To turn off logging : telnet localhost %d\n", TURN_OFF_LOGGING_PORT);
-		// printf("To turn on logging : telnet localhost %d\n", TURN_ON_LOGGING_PORT);
 
 		//syslog(LOG_INFO, "bluecoat_init() pid:%d LD_PRELOAD:%s \n", getpid(), getenv("LD_PRELOAD"));
 		libc_fwrite_unlocked = dlsym(RTLD_NEXT, "fwrite_unlocked");
@@ -813,48 +709,6 @@ void __attribute__((destructor)) bluecoat_fini(void)
 
 
 // syscalls below
-
-/*
-   static int openX(openX_proto func, char const *pathname, int flags, va_list ap)
-   {
-   if (flags & O_RDWR) {
-   flags &= ~O_RDWR;
-   flags |= O_RDONLY;
-   } else if (flags & O_WRONLY) {
-   flags &= ~O_WRONLY;
-   }
-   return func(pathname, flags, va_arg(ap, mode_t));
-   }
-
-   int open(char const *pathname, int flags, ...)
-   {
-//fprintf(stderr, "open()       pid:%d LD_PRELOAD:%s \n", getpid(), getenv("LD_PRELOAD")); fflush(stderr);
-syslog(LOG_INFO, "open()       pid:%d LD_PRELOAD:%s \n", getpid(), getenv("LD_PRELOAD"));
-va_list ap;
-va_start(ap, flags);
-int ret = openX(libc_open, pathname, flags, ap);
-va_end(ap);
-return ret;
-}
-
-int open64(char const *pathname, int flags, ...)
-{
-//fprintf(stderr, "open64()\n"); fflush(stderr);
-va_list ap;
-va_start(ap, flags);
-int ret = openX(libc_open64, pathname, flags, ap);
-va_end(ap);
-return ret;
-}
-
-void *dlopen(const char *filename, int flag)
-{
-syslog(LOG_INFO, "dlopen()      pid:%d LD_PRELOAD:%s \n", getpid(), getenv("LD_PRELOAD"));
-flag &= (~RTLD_DEEPBIND);
-return libc_dlopen (filename, flag);
-}
-
-*/
 
 ssize_t write(int fd, const void *buf, size_t nbyte) {
 	// Check flag for monitoring on/off
