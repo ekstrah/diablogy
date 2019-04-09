@@ -1,5 +1,5 @@
 #define _GNU_SOURCE
-
+#include <stropts.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
@@ -28,6 +28,8 @@
 #include <sys/shm.h>
 #include <sys/mman.h>
 #include <aio.h>
+#include <limits.h>
+
 #define FD_PATH_SIZE 500 // bueffer size which will be used in 'getPathByFd()' (declared by wjhan)
 
 #define SYSLOG 10
@@ -713,6 +715,12 @@ void __attribute__((destructor)) bluecoat_fini(void)
 int close(int fd) {
 	bluecoat_init();
 
+	struct stat sb;
+	if (fstat(fd, &sb) == -1)
+		return libc_close(fd);
+
+	if ((sb.st_mode & S_IFMT) == S_IFSOCK)
+		return libc_close(fd);
 
 
 	char path_buffer[FD_PATH_SIZE]; // for PATH of FD (to the log)
